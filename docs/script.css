@@ -1,0 +1,12 @@
+html{
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+#link{
+    color: orange;
+}
+
+#link:hover{
+    cursor: pointer;
+    color: #ff7700;
+}
