@@ -2,16 +2,20 @@ import tweepy
 import webbrowser
 import time
 
-consumer_key = "wQqQ0anvvoJc6Kxn9rtCKnto2"
-consumer_secret = "10IXsG9AETGvEv1vf7KfQfWHcx8ra8GhtS3MR5tIwiKMKDQ46T"
-access_token = "595909509-KwLgiGuHan8ATKSfjxVVAUhP2iOJLUo0NyNDuHMQ"
-access_token_secret = "Vz8vfhljPjAcR6W7ECo0IH6sqB1GYv7WWIdLFF92D20CA"
-callback_uri = "oob" # url
+# Consumer Keys from developer portal
+consumer_key = ""
+consumer_secret = ""
 
+# Have to get these from get_token.py
+access_token = ""
+access_token_secret = ""
+
+# Twitter login and authentication
+callback_uri = "oob" # url
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret, callback_uri)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
-public_tweets = api.home_timeline()
+
 
 def get_tweets(user, num_tweets = 1):
     getuser = api.get_user(user)
@@ -42,9 +46,9 @@ def get_status(info_id, user):
                     file.truncate() # Remove the contents of the text file
                     file.write(new_info_id) # Write the new info id
                     file.close()
-                    return new_info_id
+                    return new_info_id # return the new tweet id
                 print("No new tweet found.")
-                return 0
+                return None
 
 
 get_status(get_tweets("ritTigers"), "ritTigers")
