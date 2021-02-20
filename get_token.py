@@ -16,7 +16,7 @@ redirect_url = auth.get_authorization_url()
 webbrowser.open(redirect_url)
 
 
-user_pin_input = input("Enter the 6 digit value to reveal the access tokens: ")
+user_pin_input = input("Enter the 7-digit PIN code to reveal the access tokens: ")
 # Gets the access keys
 auth.get_access_token(user_pin_input)
 print("Access Token: " + auth.access_token)
