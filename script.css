@@ -1,12 +1,173 @@
 html{
     font-family: 'Noto Sans JP', sans-serif;
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0px;
 }
 
 #link{
-    color: orange;
+    color: grey;
+    font-size: 90px;
+    text-align: center;
+    position: absolute;
+    top:  70%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    vertical-align: middle;
 }
 
 #link:hover{
     cursor: pointer;
-    color: #ff7700;
+    color:#ec6e00
+}
+
+#link:visited{
+    color: grey;
+}
+
+.command-section{
+    margin: 30px;
+}
+
+.command{
+    margin: 10px 0px;
+}
+
+#command-end{
+    margin:20px 0px;
+    color:#ff7700
+}
+
+.command-container{
+    margin: 30px;
+}
+
+dt{
+    color:#ff7700
+}
+
+.screenshots-container{
+    text-align: center;
+}
+
+.screenshot{
+    margin: 20px;
+}
+
+footer{
+    background-color: black;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.index-container{
+    height: 100%;
+}
+
+#github-link{
+    color:white
+}
+
+#github-link:hover{
+    color:rgb(158, 158, 158)
+}
+
+.about-container{
+    margin: 30px;
+    padding: 3px;
+    width: 70%;
+}
+
+.about-section .qa, .bio{
+    margin: 15px 5px;
+}
+
+.about-section .about-name, .about-questions{
+    color:#ec6e00;
+}
+
+/* Style the header */
+.header {
+    background-color: #f1f1f1;
+    padding: 20px;
+    text-align: center;
+
+
+    animation: colorchangeTitle 40s linear 2s infinite;
+}
+
+.rightcolumn {
+    float: right;
+    width: 40%;
+    background-color: #f1f1f1;
+    padding-left: 20px;
+}
+
+/* Style the top navigation bar */
+.topnav {
+    overflow: hidden;
+    background-color: #333;
+}
+
+/* Style the topnav links */
+.topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 30px;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+/* this is for the links */ 
+@keyframes example {
+    from {background-color: red;}
+    to {background-color: yellow;}
+}
+
+/* this is for the title */ 
+@keyframes exampleTitle {
+    from {background-color: orange;}
+    to {background-color: red;}
+}
+
+@keyframes colorchangeTitle
+{
+    0%   {background: orange; color: black;}
+    33%  {background: white; color: orange;}
+    66%  {background: orange;color: black;}
+    100% {background: white; color: orange;}
+    66%  {background: orange;color: black;}
+    33%  {background: white; color: orange;}
+}
+
+
+/* Change color on hover RGBBBB */ 
+.topnav a:hover {
+    background-color: red;
+    animation-name: example;
+    animation-duration: 4s;
+}
+
+.card {
+    width: 1000px;
+    height: 100px;
+    background: white;
+    position: relative;
+    animation: mymove 4s;
+    animation-fill-mode: forwards;
+}
+
+
+@keyframes mymove {
+    from {left: 90%;}
+    to {left: 39%;}
+}
+
+#animation{
+    position: relative;
 }

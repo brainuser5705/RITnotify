@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="UTF-8">
+    <title>ritNotify</title>
+    <link href="script.css" type="text/css" rel="stylesheet">
+    <script src="javascript.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+</html>
+<body>
+
+    <div class="header">
+        <h1>TigerBot</h1>
+        <div>Discord notification bot for all your RIT needs!</div>
+    </div>
+
+    <div class="topnav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="commands.html">Commands</a>
+    </div>
+
+    <div class="command-container">
+        <h1>Commmands</h1>
+        <div>Prefix: <b>rit</b></div>
+        <section class="command-section">
+            <h3>Dining</h3>
+            <section class="command">
+                <dt><b>dining</b> <i>&lsaquo;location&rsaquo;</i></dt>
+                <dd><i>available parameters:</i> bbc (Brick City Café ), cmc (Café & Market at Crossroads), tc (The Commons), gracies (Gracie's) </dd>
+                <dd>Get the daily special menus for a specific place!</dd>
+            </section>
+            <section class="command">
+                <dt><b>dining</b> hours <u>or</u> hours-open</dt>
+                <dd>Check which dining places are open or not</dd>
+            </section>
+        </section>
+        <hr>
+        <section class="command-section">
+            <h3>Social Media</h3>
+            <section class="command">
+                <dt><b>twitter</b></dt>
+                <dd>Gathers the latest twitter posts from <a href="https://twitter.com/RITtigers" target="_blank">@RITtigers</a> (RIT's Twitter)</dd>
+            </section>
+                <dt><b>reddit</b></dt>
+                <dd>Gathers the last 3 reddit post in <a href="https://www.reddit.com/r/rit/" target="_blank">r/rit</a> (RIT's reddit page)</dd>
+            </section>
+        </section>
+        <hr>
+        <div id="command-end">
+            <b>These were the only features we were able to implement on time, but many more features can be added to TigerBot!</b>
+            <div style="margin-top: 5px; color:black;">
+                Here are some features we were thinking about: 
+                <ul style="margin-top: 0px;">
+                    <li>Automation for messages: <i>subscription to certain features and receive DMs from TigerBot</i></li>
+                    <li>More APIs and webscraping: <i>working with more services that Tigers use and integrate it with TigerBot (ex. myCourses notifications, @rit.edu emails)</i></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer style="top: 100%;">
+        A project for RIT's BrickHack7.
+        <b>Built by Ashley Liew, Jackson Murphy, and Jin Moon (2021)</b><br>
+        All Tigers are welcome to <a id="github-link" href="https://github.com/brainuser5705/ritNotify" target="_blank">collaborate</a> on this project!
+    </footer>
+
+</body>
+</html>

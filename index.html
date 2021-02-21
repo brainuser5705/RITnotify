@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+</head>
     <meta charset="UTF-8">
-    <title>ritNotify</title>
+    <title>TigerBot</title>
     <link href="script.css" type="text/css" rel="stylesheet">
     <script src="javascript.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -10,13 +10,62 @@
 </head>
 <body>
 
-    <h1>ritNotify</h1>
+  <div class="header">
+    <h1>TigerBot</h1>
+    <div>Discord notification bot for all your RIT needs!</div>
+  </div>
 
-    <h2>Discord notification bot for all your RIT needs!</h2>
+  <div class="topnav">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="commands.html">Commands</a>
+  </div>
 
-    <div id="link" onclick="inviteBot();"><u>Invite <b>ritNotify</b> to your server!</u></div>
+  <div class='index-container'>
 
-    <div>Built by Ashley Liew, Jackson Murphy, Jin Moon for RIT's BrickHack7</div>
+    <div id="animation">
+      <div class="leftcolumn">
+        <div class="card">
+          <img src="https://i.imgur.com/sGqk8gf.png" width="400" height="400">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='invite-link' style="height: 600px;">
+    <div id="link" onclick="inviteBot();">Invite <b>Tiger Bot</b> to your server now!</div>
+  </div>
+
+  <div class="screenshots-container">
+    <div class="screenshot">
+      <img src="images/hours.png"> <br>
+      <caption>The <i>dining hours</i> command shows you which dining places are currently open and close</caption>
+    </div>
+    <hr>
+    <div class="screenshot">
+      <img src="images/hours-open.png"><br>
+      <caption>For a more condensed list, user <i>dining hours-open</i> instead</caption>
+    </div>
+    <hr>
+    <div class="screenshot">
+      <img src="images/menus.png">
+    </div>
+    <hr>
+    <div class="screenshot">
+      <img src="images/reddit.png"><br>
+      <caption>Get the most recent reddit posts from r/rit.</caption>
+    </div>
+    <hr>
+    <div class="screenshot">
+      <img src="images/twitter_pic.png">
+    </div>
+  </div>
+
+  <footer>
+    A project for RIT's BrickHack7.
+    <b>Built by Ashley Liew, Jackson Murphy, and Jin Moon 2021</b><br>
+    All Tigers are welcome to <a id="github-link" href="https://github.com/brainuser5705/ritNotify" target="_blank">colloborate</a> on this project!
+  </footer>
 
 </body>
 </html>
