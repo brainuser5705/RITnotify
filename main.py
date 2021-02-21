@@ -21,9 +21,9 @@ async def pingpong(ctx):
     await ctx.send(response)
 
 @bot.command(name='twitter')
-async def get_tweet(ctx, num_tweets):
-    tweet = tweets.get_tweets("ritTigers", int(num_tweets))
-    await ctx.send(tweet)
+async def get_tweet(ctx):
+    tweet = tweets.get_new_tweet("RITTigers")
+    await ctx.send(embed=tweet)
 
 
 

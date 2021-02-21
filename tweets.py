@@ -1,6 +1,7 @@
 import os
 import tweepy
 import time
+import discord
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -57,14 +58,17 @@ def get_new_tweet(user):
                     print("@" + getuser.screen_name + " has posted a new tweet") # We found the tweet
                     
                     for info in user_tl:                        # Might need some help
-                        print("Contents: \n" + info.full_text)
-                        print("(Posted at " + str(info.created_at) + ")")
-
+                        embed = discord.Embed( 
+                                title="@" + getuser.screen_name + " has posted a new tweet",
+                                url="https://twitter.com/@RITTigers",
+                                description=info.full_text,
+                                color=discord.Color.orange())                
+                        embed.set_footer(text="Posted at " + str(info.created_at))
                     file.seek(0) # Go to the beginning of the text file
                     file.truncate() # Remove the contents of the text file
                     file.write(tweet_id) # Write the new info id
                     file.close()
-                    return 0
+                    return embed
                 i += 1
 
 #get_tweets("ritTigers")
