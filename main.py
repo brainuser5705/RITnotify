@@ -21,13 +21,24 @@ async def pingpong(ctx):
     await ctx.send(response)
 
 @bot.command(name='dining', help="bcc - Brick City Café, cmc - Café & Market at Crossroads, tc - The Commons, gracies - Gracie's")
-async def get_dining_menu(ctx, location):
-    location, error, embeds = dining.get_menu(location)
-    await ctx.send(location)
-    if error:
-        await ctx.send(error)
+async def get_dining_menu(ctx, args):
+    if args in ['bcc', 'cmc', 'tc', 'gracies']:
+        location, error, embeds = dining.get_menu(args)
+        await ctx.send(location)
+        if error:
+            await ctx.send(error)
+        else:
+            for embed in embeds:
+                await ctx.send(embed=embed)
+    elif args == 'hours-open': # get open places only
+        embed = dining.get_hours(False)
+        await ctx.send(embed=embed)
+    elif args == 'hours':
+        embed = dining.get_hours(True)
+        await ctx.send(embed=embed)
     else:
-        for embed in embeds:
-            await ctx.send(embed=embed)
+        response = "Invalid command: rit dining <param>. See 'rit help dining' for more details."
+        await ctx.send(response)
+
 
 bot.run(TOKEN)
