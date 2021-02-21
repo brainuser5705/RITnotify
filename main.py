@@ -22,7 +22,7 @@ async def pingpong(ctx):
 
 @bot.command(name='twitter')
 async def get_tweet(ctx, num_tweets):
-    tweet = get_tweet("ritTigers", int(num_tweets))
+    tweet = tweets.get_tweets("ritTigers", int(num_tweets))
     await ctx.send(tweet)
 
 
