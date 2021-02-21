@@ -23,7 +23,7 @@ async def pingpong(ctx):
     await ctx.send(response)
 
 
-@bot.command(name='reddit_post')
+@bot.command(name='reddit')
 async def grab_posts(ctx):
     REDDIT_CLIENT_ID = os.getenv('REDDIT_CLIENT_ID')
     REDDIT_CLIENT_SECRET = os.getenv('REDDIT_CLIENT_SECRET')
@@ -33,17 +33,17 @@ async def grab_posts(ctx):
                             client_secret=REDDIT_CLIENT_SECRET,
                             user_agent=USER_AGENT,
                             check_for_async=False)
-    for submission in reddit.subreddit("rit").new(limit=1):
+    for submission in reddit.subreddit("rit").new(limit=3):
         if not submission.stickied:
             embed=discord.Embed(
             title=submission.title,
                 url=submission.url,
                 description=submission.selftext,
                 color=discord.Color.blue())
-            embed.set_footer(text= "by "+ str(submission.author) + " on " + datetime.utcfromtimestamp(int(submission.created_utc)).strftime('%Y-%m-%d %H:%M:%S'))
+            embed.set_footer(text= "by r/"+ str(submission.author) + " on " + datetime.utcfromtimestamp(int(submission.created_utc)).strftime('%Y-%m-%d %H:%M:%S'))
             await ctx.send(embed=embed)
 
-            
+
 @bot.command(name='twitter')
 async def get_tweet(ctx):
     tweet = tweets.get_new_tweet("RITTigers")
