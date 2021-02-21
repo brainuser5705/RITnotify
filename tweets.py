@@ -48,28 +48,16 @@ def get_new_tweet(user):
         tweet_id = str(info.id) # Getting the most recent tweet ID, might need to refactor
                                 # to not include the for loop
 
-    i = 0
-    with open("recent_tweet.txt", "r+") as file:
-        for line in file:
-            line = str(line)
-            for id_num in tweet_id:
-                id_num = str(id_num)
-                if line[i] != id_num: # If there is a mismatch on the characters
-                    print("@" + getuser.screen_name + " has posted a new tweet") # We found the tweet
-                    
-                    for info in user_tl:                        # Might need some help
-                        embed = discord.Embed( 
-                                title="@" + getuser.screen_name + " has posted a new tweet",
-                                url="https://twitter.com/@RITTigers",
-                                description=info.full_text,
-                                color=discord.Color.orange())                
-                        embed.set_footer(text="Posted at " + str(info.created_at))
-                    file.seek(0) # Go to the beginning of the text file
-                    file.truncate() # Remove the contents of the text file
-                    file.write(tweet_id) # Write the new info id
-                    file.close()
-                    return embed
-                i += 1
+    print("@" + getuser.screen_name + "'s newest tweet:") # We found the tweet
+    
+    for info in user_tl:                        # Might need some help
+        embed = discord.Embed( 
+                title="@" + getuser.screen_name + " has posted a new tweet",
+                url="https://twitter.com/@RITTigers",
+                description=info.full_text,
+                color=discord.Color.orange())                
+        embed.set_footer(text="Posted at " + str(info.created_at))
+    return embed
 
 #get_tweets("ritTigers")
 #get_new_tweet("ritTigers")
