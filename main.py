@@ -1,9 +1,10 @@
 import os
-
 import discord
 import tweets
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
+import praw
+from datetime import datetime
 import dining
 
 intents = discord.Intents(messages=True, members=True, guilds=True, presences=True)
@@ -21,7 +22,28 @@ async def pingpong(ctx):
     response = 'pong'
     await ctx.send(response)
 
-@bot.command(name='get_tweet')
+@bot.command(name='reddit')
+async def grab_posts(ctx):
+    REDDIT_CLIENT_ID = os.getenv('REDDIT_CLIENT_ID')
+    REDDIT_CLIENT_SECRET = os.getenv('REDDIT_CLIENT_SECRET')
+    USER_AGENT = "RIT bot for hackathon"
+
+    reddit = praw.Reddit(client_id=REDDIT_CLIENT_ID,
+                            client_secret=REDDIT_CLIENT_SECRET,
+                            user_agent=USER_AGENT,
+                            check_for_async=False)
+    for submission in reddit.subreddit("rit").new(limit=3):
+        if not submission.stickied:
+            embed=discord.Embed(
+            title=submission.title,
+                url=submission.url,
+                description=submission.selftext,
+                color=discord.Color.blue())
+            embed.set_footer(text= "by r/"+ str(submission.author) + " on " + datetime.utcfromtimestamp(int(submission.created_utc)).strftime('%Y-%m-%d %H:%M:%S'))
+            await ctx.send(embed=embed)
+
+
+@bot.command(name='twitter')
 async def get_tweet(ctx):
     tweet = tweets.get_new_tweet("RITTigers")
     try:
