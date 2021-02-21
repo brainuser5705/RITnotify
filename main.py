@@ -2,7 +2,7 @@ import os
 import discord
 import tweets
 from dotenv import load_dotenv
-from discord.ext import commands
+from discord.ext import commands, tasks
 import praw
 from datetime import datetime
 import dining
@@ -21,7 +21,6 @@ async def on_ready():
 async def pingpong(ctx):
     response = 'pong'
     await ctx.send(response)
-
 
 @bot.command(name='reddit')
 async def grab_posts(ctx):
@@ -47,7 +46,10 @@ async def grab_posts(ctx):
 @bot.command(name='twitter')
 async def get_tweet(ctx):
     tweet = tweets.get_new_tweet("RITTigers")
-    await ctx.send(embed=tweet)
+    try:
+        await ctx.send(embed=tweet)
+    except:
+        await ctx.send(tweet)
 
 @bot.command(name='dining', help="bcc - Brick City Café, cmc - Café & Market at Crossroads, tc - The Commons, gracies - Gracie's")
 async def get_dining_menu(ctx, args):
