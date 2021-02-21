@@ -3,3 +3,4 @@
 err.log
 notes.txt
 venv
+__pycache__
