@@ -1,6 +1,7 @@
 import os
 
 import discord
+import tweets
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -18,5 +19,12 @@ async def on_ready():
 async def pingpong(ctx):
     response = 'pong'
     await ctx.send(response)
+
+@bot.command(name='twitter')
+async def get_tweet(ctx, num_tweets):
+    tweet = get_tweet("ritTigers", int(num_tweets))
+    await ctx.send(tweet)
+
+
 
 bot.run(TOKEN)

@@ -1,19 +1,24 @@
+import os
 import tweepy
-import webbrowser
 import time
+from dotenv import load_dotenv
+load_dotenv()
 
 # Consumer Keys from developer portal
-consumer_key = ""
-consumer_secret = ""
+CONSUMER_KEY = os.getenv('CONSUMER_KEY')
+CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
 
 # Have to get these from get_token.py
-access_token = ""
-access_token_secret = ""
+ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
+ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
+
+# Have to get these from get_token.py
+
 
 # Twitter login and authentication
 callback_uri = "oob" # url
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret, callback_uri)
-auth.set_access_token(access_token, access_token_secret)
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET, callback_uri)
+auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
 
@@ -24,13 +29,12 @@ def get_tweets(user, num_tweets = 1):
                                 include_rts = False,
                                 tweet_mode = 'extended')
     i = 0
-    
+    string = ""
     for info in user_tl:   # Need some help trying to get data off of user_tl without doing for loop
         i = i + 1
-        print("Tweet #" + str(i))
-        print("Tweet ID " + str(info.id))
-        print("Created " + str(info.created_at))
-        print("Contents: \n" + info.full_text)
+        string += "\nTweet #" + str(i) + "\nTweet ID " + str(info.id) + "\nCreated " + str(info.created_at) + "\nContents: \n" + info.full_text
+
+    return string
 
 def get_new_tweet(user):
     getuser = api.get_user(user)
@@ -64,4 +68,4 @@ def get_new_tweet(user):
                 i += 1
 
 #get_tweets("ritTigers")
-get_new_tweet("ritTigers")
+#get_new_tweet("ritTigers")
