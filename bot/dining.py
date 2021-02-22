@@ -1,4 +1,3 @@
-from pprint import pprint
 import os
 import re
 
@@ -8,10 +7,12 @@ import requests
 import discord
 from datetime import datetime
 
+MENU_URL = 'https://www.rit.edu/fa/diningservices/daily-specials'
+HOURS_URL = 'https://www.rit.edu/fa/diningservices/places-to-eat/hours'
+
 def get_menu(location_name):
 
-    URL = 'https://www.rit.edu/fa/diningservices/daily-specials'
-    page = requests.get(URL)
+    page = requests.get(MENU_URL)
     soup = BeautifulSoup(page.content, 'html.parser')
 
     location_ids = {'bcc': "103", 'cmc': "104", 'tc': "105", 'gracies': "107"}
@@ -58,44 +59,51 @@ def get_menu(location_name):
 
     return s, error, embeds
 
-def get_hours(includeClose):
-    URL = "https://www.rit.edu/fa/diningservices/places-to-eat/hours"
-    page = requests.get(URL)
-    soup = BeautifulSoup(page.content, 'html.parser')
-    content = soup.find('div', class_='view-content')
-
-    places = content.find_all('div', class_='hours-title')
+def get_hours(is_include_closed):
     current_time = datetime.now()
-    current_hour = current_time.hour
+    time_regex = re.compile(r'(1[012]|[1-9]):([0-5][0-9])(am|pm)')
 
-    embed = discord.Embed(color=Colour.orange(), title="RIT Dining Hours", description="Open or closed?")
+    page = requests.get(HOURS_URL)
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    places = soup.find_all('div', class_='hours-title')
+
+    embed = discord.Embed(color=Colour.orange(), title="RIT Dining Hours", description="See which stores are open or closed")
 
     for place in places:
         box = place.find_next_sibling('div', class_="container-fluid location-box panel panel-default hours-all-panel")
         time = box.find('div', class_='row panel-body')
 
-        timeRegex = re.compile(r'(1[012]:|[1-9]:|am|pm|Closed)')
-        timesGroup = timeRegex.findall(time.text)
+        time_groups = time_regex.findall(time.text)
 
-        s = ""
-        if timesGroup[0] == 'Closed':
-            if includeClose:
-                embed.add_field(name=place.text + ":red_circle: (CLOSED)", value="CLOSED", inline=False)
+        if time.text == 'Closed' and is_include_closed:
+
+            embed.add_field(name=place.text + ':red_circle: (CLOSED)', value='-----------', inline=False)
+
         else:
-            s += time.find('div', class_='col-sm-5').text
 
-            starthour = int(timesGroup[0][:-1])
-            endhour = int(timesGroup[2][:-1])
+            start_hour = int(time_groups[0][0])
+            start_minute=int(time_groups[0][1])
+            start_meridiem = time_groups[0][2]
+            end_hour = int(time_groups[1][0])
+            end_minute = int(time_groups[1][1])
+            end_meridiem = time_groups[1][2]
 
-            if timesGroup[1] == 'pm':
-                starthour = (starthour % 12) + 12
-            if timesGroup[-1] == 'pm':
-                endhour = (endhour % 12) + 12
+            start_hour = (start_hour % 12) + 12 if start_meridiem == 'pm' else start_hour
+            end_hour = (end_hour % 12) + 12 if end_meridiem == 'pm' else end_hour
 
-            if starthour <= current_hour <= endhour:
-                embed.add_field(name=place.text + ":green_circle: (OPEN)", value=s, inline=False)
-            elif includeClose:
-                embed.add_field(name=place.text + ":red_circle: (CLOSED)", value=s, inline=False)
+            place_hours = time.find('div', class_='col-sm-5').text.strip()
+
+            start_datetime = current_time.replace(hour=start_hour, minute=start_minute)
+            end_datetime = current_time.replace(hour=end_hour, minute=end_minute)
+
+            if start_datetime <= current_time <= end_datetime:
+                embed.add_field(name=place.text + ':green_circle: (OPEN)', value=place_hours, inline=False)
+            elif is_include_closed:
+                embed.add_field(name=place.text + ':red_circle: (CLOSED)', value=place_hours, inline=False)
+
+    if not embed.fields:
+        embed.add_field(name='No places are open now.', value='-----------')
 
     return embed
 
