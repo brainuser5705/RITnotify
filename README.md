@@ -1,7 +1,4 @@
 # tiger-bot
-RIT notifications Discord bot
+A RIT notifications Discord bot (*Initially a submission for BrickHack7*)
 
-A student-made RIT notifications Discord bot
-**Submission for BrickHack7**
-
-Currently in development
+## Currently in development
