@@ -96,14 +96,14 @@ def get_hours(is_include_closed):
         # the time container
         time = box.find('div', class_='row panel-body')
 
-        if time.text == 'Closed' and is_include_closed:
+        # groups into (HH):(mm)(am|pm)
+        time_groups = time_regex.findall(time.text)
 
-            embed.add_field(name=place.text + ':red_circle: (CLOSED)', value='-----------', inline=False)
+        if not time_groups and is_include_closed: # Regex will not match 'Closed'
+
+            embed.add_field(name=place.text + ':red_circle: (CLOSED)', value='-', inline=False)
 
         else:
-
-            # groups into (HH):(mm)(am|pm)
-            time_groups = time_regex.findall(time.text)
 
             start_hour = int(time_groups[0][0])
             start_minute = int(time_groups[0][1])
