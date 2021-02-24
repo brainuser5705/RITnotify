@@ -26,8 +26,6 @@ async def on_raw_reaction_add(payload): # so this works for any message, not jus
             await user.create_dm()
         await user.dm_channel.send(
             'This is TigerBot! I am here for all your RIT needs!')
-    else:
-        print('something is wrong')
 
 @bot.command(name='ping')
 async def pingpong(ctx):
