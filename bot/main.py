@@ -7,15 +7,27 @@ import praw
 from datetime import datetime
 import dining
 
-intents = discord.Intents(messages=True, members=True, guilds=True, presences=True)
-
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+MESSAGE_ID = int(os.getenv('SUBSCRIPTION_MESSAGE'))
 
 bot = commands.Bot(command_prefix='rit ')
 
+@bot.event
 async def on_ready():
     print(f'{bot.user.name} is online!')
+
+@bot.event
+async def on_raw_reaction_add(payload): # so this works for any message, not just in the internal message cache
+    user = payload.member
+    if payload.message_id == MESSAGE_ID:
+        print(f'{bot.user.name} got a new user!')
+        if not user.dm_channel:
+            await user.create_dm()
+        await user.dm_channel.send(
+            'This is TigerBot! I am here for all your RIT needs!')
+    else:
+        print('something is wrong')
 
 @bot.command(name='ping')
 async def pingpong(ctx):
@@ -51,16 +63,13 @@ async def get_tweet(ctx):
     except:
         await ctx.send(tweet)
 
-@bot.command(name='dining', help="bcc - Brick City Café, cmc - Café & Market at Crossroads, tc - The Commons, gracies - Gracie's")
+@bot.command(name='dining', help='bcc (Brick City Café), cmc (Café & Market at Crossroads), tc (The Commons), gracies (Gracie\'s)')
 async def get_dining_menu(ctx, args):
     if args in ['bcc', 'cmc', 'tc', 'gracies']:
-        location, error, embeds = dining.get_menu(args)
-        await ctx.send(location)
-        if error:
-            await ctx.send(error)
-        else:
-            for embed in embeds:
-                await ctx.send(embed=embed)
+        message, embeds = dining.get_menu(args)
+        await ctx.send(message)
+        for embed in embeds:
+            await ctx.send(embed=embed)
     elif args == 'hours-open': # get open places only
         embed = dining.get_hours(False)
         await ctx.send(embed=embed)
