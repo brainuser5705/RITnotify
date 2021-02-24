@@ -74,7 +74,7 @@ def get_hours(is_include_closed):
     """
     Web scrapes the RIT dining hours webpage
     :param is_include_closed: whether to show closed places or not
-    :return: Embed of all the places
+    :return: Embed of all the places and their hours
     """
 
     current_time = datetime.now()
@@ -84,48 +84,70 @@ def get_hours(is_include_closed):
     soup = BeautifulSoup(page.content, 'html.parser')
 
     embed = discord.Embed(color=Colour.orange(), title="RIT Dining Hours",
-                          description="See which stores are open or closed")
+                          description="See which dining locations are open or closed")
 
     # hours-title div is the starting tag for all places, specifically the name of the place
     places = soup.find_all('div', class_='hours-title')
 
     for place in places:
 
-        # container for the day and time of place
-        box = place.find_next_sibling('div', class_="container-fluid location-box panel panel-default hours-all-panel")
-        # the time container
-        time = box.find('div', class_='row panel-body')
+        # time frame text
+        time_frame = place.find_next_sibling('div')
 
-        # groups into (HH):(mm)(am|pm)
-        time_groups = time_regex.findall(time.text)
+        # string for list of time frames
+        string = ""
 
-        if not time_groups and is_include_closed: # Regex will not match 'Closed'
+        # loops through all time frame containers until next place container is next
+        while ' '.join(time_frame.attrs['class']) == 'container-fluid location-box panel panel-default hours-all-panel':
 
-            embed.add_field(name=place.text + ':red_circle: (CLOSED)', value='-', inline=False)
+            # the time frame name container
+            heading = time_frame.find('div', class_='row panel-heading')
 
-        else:
+            # the time container
+            time = time_frame.find('div', class_='row panel-body')
 
-            start_hour = int(time_groups[0][0])
-            start_minute = int(time_groups[0][1])
-            start_meridiem = time_groups[0][2]
-            end_hour = int(time_groups[1][0])
-            end_minute = int(time_groups[1][1])
-            end_meridiem = time_groups[1][2]
+            # groups into (HH):(mm)(am|pm)
+            time_groups = time_regex.findall(time.text)
 
-            # convert into 24-hr format
-            start_hour = (start_hour % 12) + 12 if start_meridiem == 'pm' else start_hour
-            end_hour = (end_hour % 12) + 12 if end_meridiem == 'pm' else end_hour
+            if not time_groups and is_include_closed:  # Regex will not match 'Closed'
 
-            # Creates new datetime object for comparison with current time
-            start_datetime = current_time.replace(hour=start_hour, minute=start_minute)
-            end_datetime = current_time.replace(hour=end_hour, minute=end_minute)
+                string += ':red_circle: (CLOSED)**' + heading.text + '** *all day*\n'
 
-            place_hours = time.find('div', class_='col-sm-5').text.strip()
+            else:
 
-            if start_datetime <= current_time <= end_datetime:
-                embed.add_field(name=place.text + ':green_circle: (OPEN)', value=place_hours, inline=False)
-            elif is_include_closed:
-                embed.add_field(name=place.text + ':red_circle: (CLOSED)', value=place_hours, inline=False)
+                start_hour = int(time_groups[0][0])
+                start_minute = int(time_groups[0][1])
+                start_meridiem = time_groups[0][2]
+                end_hour = int(time_groups[1][0])
+                end_minute = int(time_groups[1][1])
+                end_meridiem = time_groups[1][2]
+
+                # convert into 24-hr format
+                start_hour = (start_hour % 12) + 12 if start_meridiem == 'pm' else start_hour
+                end_hour = (end_hour % 12) + 12 if end_meridiem == 'pm' else end_hour
+
+                # Creates new datetime object for comparison with current time
+                start_datetime = current_time.replace(hour=start_hour, minute=start_minute)
+                end_datetime = current_time.replace(hour=end_hour, minute=end_minute)
+
+                place_hours = time.find('div', class_='col-sm-5').text.strip()
+
+                if start_datetime <= current_time <= end_datetime:
+                    string += ':green_circle: (OPEN)**' + heading.text + '** *' + place_hours + '*\n'
+                elif is_include_closed:
+                    string += ':red_circle: (CLOSED)**' + heading.text + '** *' + place_hours + '*\n'
+
+            next_time_frame = time_frame.find_next_sibling('div')
+
+            if next_time_frame: # for the last place when there is no more siblings, then it breaks
+                time_frame = next_time_frame
+            else:
+                break
+
+        if string == "":  # for places who have no times at all
+            string = ':red_circle: (CLOSED)'
+
+        embed.add_field(name=place.text.strip(), value=string, inline=False) # making embed at the very end when everything is added
 
     if not embed.fields:
         embed.add_field(name='No places are open now.', value='-')
