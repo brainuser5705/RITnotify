@@ -65,42 +65,55 @@ def get_hours(is_include_closed):
     places = soup.find_all('div', class_='hours-title')
 
     for place in places:
-        box = place.find_next_sibling('div', class_="container-fluid location-box panel panel-default hours-all-panel")
 
-        heading = box.find('div', class_='row panel-heading')
+        print(place.text.strip())
+
+        time_frame = place.find_next_sibling('div')
+
+        heading = time_frame.find('div', class_='row panel-heading')
         print(heading.text)
 
-        time = box.find('div', class_='row panel-body')
+        # loops through the time containers until next hours-title and there is another sibling (for the last place specifically)
+        while ' '.join(time_frame.attrs['class']) == 'container-fluid location-box panel panel-default hours-all-panel':
 
-        time_groups = time_regex.findall(time.text)
+            time = time_frame.find('div', class_='row panel-body')
 
-        print(time_groups)
+            time_groups = time_regex.findall(time.text)
 
-        if not time_groups and is_include_closed: # regex would not match 'Closed', the array is empty
+            if not time_groups and is_include_closed: # regex would not match 'Closed', the array is empty
 
-            print(place.text.strip() + " is closed.")
+                print('(closed) all day')
 
-        else:
+            else:
 
-            start_hour = int(time_groups[0][0])
-            start_minute = int(time_groups[0][1])
-            start_meridiem = time_groups[0][2]
-            end_hour = int(time_groups[1][0])
-            end_minute = int(time_groups[1][1])
-            end_meridiem = time_groups[1][2]
+                start_hour = int(time_groups[0][0])
+                start_minute = int(time_groups[0][1])
+                start_meridiem = time_groups[0][2]
+                end_hour = int(time_groups[1][0])
+                end_minute = int(time_groups[1][1])
+                end_meridiem = time_groups[1][2]
 
-            start_hour = (start_hour % 12) + 12 if start_meridiem == 'pm' else start_hour
-            end_hour = (end_hour % 12) + 12 if end_meridiem == 'pm' else end_hour
+                start_hour = (start_hour % 12) + 12 if start_meridiem == 'pm' else start_hour
+                end_hour = (end_hour % 12) + 12 if end_meridiem == 'pm' else end_hour
 
-            place_hours = time.find('div', class_='col-sm-5').text.strip()
+                place_hours = time.find('div', class_='col-sm-5').text.strip()
 
-            start_datetime = current_time.replace(hour=start_hour, minute=start_minute)
-            end_datetime = current_time.replace(hour=end_hour, minute=end_minute)
+                start_datetime = current_time.replace(hour=start_hour, minute=start_minute)
+                end_datetime = current_time.replace(hour=end_hour, minute=end_minute)
 
-            if start_datetime <= current_time <= end_datetime:
-                print(place.text.strip() + " is open! Time is: " + place_hours)
-            elif is_include_closed:
-                print(place.text.strip() + " is closed. Time was: " + place_hours)
+                if start_datetime <= current_time <= end_datetime:
+                    print('(open) Time is: ' + place_hours)
+                elif is_include_closed:
+                    print('(closed) Time was: ' + place_hours)
+
+            next_time_frame = time_frame.find_next_sibling('div')
+
+            if next_time_frame:
+                time_frame = next_time_frame
+            else:
+                break
+
+        print('\n')
 
 
 #get_menu('gracies')
