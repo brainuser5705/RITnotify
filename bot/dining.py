@@ -41,31 +41,30 @@ def get_menu(loc_arg):
 
         for menu in menus.findChildren(recursive=False):  # only find direct children, e.g. <BREAKFAST-107>, <LUNCH-107>
 
-            menu_name = menu.find('div', class_='menu-type').text
+            menu_name = menu.find('div', class_='menu-type')
 
-            embed = discord.Embed(title=menu_name, color=Colour.orange())
+            if menu_name:
 
-            # container for the actual list of options in menu
-            items_section = menu.find('div', class_='col-xs-12 col-md-12 menu-category-items')
+                embed = discord.Embed(title=menu_name.text, color=Colour.orange())
 
-            if items_section is None:
-                embed.add_field(name='No ' + menu_name + ' today.', value='-')
+                # container for the actual list of options in menu
+                items_section = menu.find('div', class_='col-xs-12 col-md-12 menu-category-items')
 
-            # gets each individual option
-            stations = items_section.find_all('div',
-                                              class_='col-xs-12 col-md-6 menu-category-list')  # b/c there is another div class='clear'
-            for item in stations:
-                station_name = item.find('div', class_='menu-category').text
-                dish = item.find('div', class_='menu-items')
+                # gets each individual option
+                stations = items_section.find_all('div',
+                                                  class_='col-xs-12 col-md-6 menu-category-list')  # b/c there is another div class='clear'
+                for item in stations:
+                    station_name = item.find('div', class_='menu-category').text
+                    dish = item.find('div', class_='menu-items')
 
-                dish_string = ""
-                for content in dish.contents[:-1]:  # there is a new line at the end
-                    if str(content) != '<br/>':
-                        dish_string += '- ' + str(content) + '\n'
+                    dish_string = ""
+                    for content in dish.contents[:-1]:  # there is a new line at the end
+                        if str(content) != '<br/>':
+                            dish_string += '- ' + str(content) + '\n'
 
-                embed.add_field(name=station_name, value=dish_string)
+                    embed.add_field(name=station_name, value=dish_string)
 
-            embeds.append(embed)  # outside of the for loop after everything is added
+                embeds.append(embed)  # outside of the for loop after everything is added
 
     return string, embeds
 
@@ -109,11 +108,12 @@ def get_hours(is_include_closed):
             # groups into (HH):(mm)(am|pm)
             time_groups = time_regex.findall(time.text)
 
+
             if not time_groups and is_include_closed:  # Regex will not match 'Closed'
 
-                string += ':red_circle: (CLOSED)**' + heading.text + '** *all day*\n'
+                string += ':red_circle: (CLOSED)**' + heading.text + '** *closed all day*\n'
 
-            else:
+            elif time_groups:
 
                 start_hour = int(time_groups[0][0])
                 start_minute = int(time_groups[0][1])
@@ -129,6 +129,9 @@ def get_hours(is_include_closed):
                 # Creates new datetime object for comparison with current time
                 start_datetime = current_time.replace(hour=start_hour, minute=start_minute)
                 end_datetime = current_time.replace(hour=end_hour, minute=end_minute)
+                # special case: if the end time is 12am, meaning it closes on the start of the next day
+                if end_hour == 12 and end_meridiem == 'am':
+                    end_datetime = current_time.replace(day=current_time.day + 1, hour=0)
 
                 place_hours = time.find('div', class_='col-sm-5').text.strip()
 
@@ -144,10 +147,13 @@ def get_hours(is_include_closed):
             else:
                 break
 
-        if string == "":  # for places who have no times at all
+
+        if string == "" and is_include_closed:  # for places who have no times at all (for when is_include_closed is True only)
             string = ':red_circle: (CLOSED)'
 
-        embed.add_field(name=place.text.strip(), value=string, inline=False) # making embed at the very end when everything is added
+        if string != "":  # final check for valid times (will exclude closed times when is_include_closed is False)
+            embed.add_field(name=place.text.strip(), value=string, inline=False) # making embed at the very end when everything is added
+
 
     if not embed.fields:
         embed.add_field(name='No places are open now.', value='-')
