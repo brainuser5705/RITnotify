@@ -22,7 +22,7 @@ def get_menu(loc_arg):
     soup = BeautifulSoup(page.content, 'html.parser')
 
     # each location has a div with an id of the following numbers
-    loc_ids = {'bcc': "103", 'cmc': "104", 'tc': "105", 'gracies': "107"}
+    loc_ids = {'bcc': "103", 'cmc': "104", 'tc': "105", 'g': "107"}
 
     menu_tag = soup.find(id=loc_ids.get(loc_arg))
 
@@ -108,7 +108,6 @@ def get_hours(is_include_closed):
             # groups into (HH):(mm)(am|pm)
             time_groups = time_regex.findall(time.text)
 
-
             if not time_groups and is_include_closed:  # Regex will not match 'Closed'
 
                 string += ':red_circle: (CLOSED)**' + heading.text + '** *closed all day*\n'
@@ -142,18 +141,17 @@ def get_hours(is_include_closed):
 
             next_time_frame = time_frame.find_next_sibling('div')
 
-            if next_time_frame: # for the last place when there is no more siblings, then it breaks
+            if next_time_frame:  # for the last place when there is no more siblings, then it breaks
                 time_frame = next_time_frame
             else:
                 break
-
 
         if string == "" and is_include_closed:  # for places who have no times at all (for when is_include_closed is True only)
             string = ':red_circle: (CLOSED)'
 
         if string != "":  # final check for valid times (will exclude closed times when is_include_closed is False)
-            embed.add_field(name=place.text.strip(), value=string, inline=False) # making embed at the very end when everything is added
-
+            embed.add_field(name=place.text.strip(), value=string,
+                            inline=False)  # making embed at the very end when everything is added
 
     if not embed.fields:
         embed.add_field(name='No places are open now.', value='-')
