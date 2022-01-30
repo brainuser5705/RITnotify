@@ -9,9 +9,9 @@ import dining
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-MESSAGE_ID = int(os.getenv('SUBSCRIPTION_MESSAGE'))
+# MESSAGE_ID = int(os.getenv('SUBSCRIPTION_MESSAGE'))
 
-bot = commands.Bot(command_prefix='')
+bot = commands.Bot(command_prefix='rit ')
 
 
 @bot.event
